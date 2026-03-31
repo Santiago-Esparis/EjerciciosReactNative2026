@@ -7,7 +7,7 @@ import { List, Divider } from 'react-native-paper';
 
 
 
-function Calendario({ excursiones }) {
+function Calendario({ excursiones, onPress }) {
 
     const renderCalendarioItem = ({ item }) => {
 
@@ -16,6 +16,9 @@ function Calendario({ excursiones }) {
             <View>
 
                 <List.Item
+
+                    onPress={ () => onPress(item.id) }
+
                     title={item.nombre}
                     description={item.descripcion}
                     titleNumberOfLines={0}
