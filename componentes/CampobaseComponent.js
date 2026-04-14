@@ -8,7 +8,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Home from './HomeComponent'
-
+import Contacto from './ContactoComponent';
+import QuienesSomos from './QuienesSomosComponent';
 
 
 
@@ -28,7 +29,7 @@ class Campobase extends Component {
 
     HomeNavegador = () => {
 
-        return(
+        return (
 
             <Stack.Navigator
                 initialRouteName="Home"
@@ -97,6 +98,56 @@ class Campobase extends Component {
         );
     };
 
+    ContactoNavegador = () => {
+
+        return (
+
+            <Stack.Navigator
+                initialRouteName="Contacto"
+                screenOptions={{
+                    headerTintColor: '#fff',
+                    headerStyle: { backgroundColor: '#015afc' },
+                    headerTitleStyle: { color: '#fff' },
+                }}
+            >
+                <Stack.Screen
+                    name="Contacto"
+                    component={Contacto}
+                    options={{
+                        title: 'Contacto',
+                    }}
+                />
+            </Stack.Navigator >
+
+        );
+
+    };
+
+    QuienesSomosNavegador = () => {
+
+        return (
+
+            <Stack.Navigator
+                initialRouteName="Quiénes Somos"
+                screenOptions={{
+                    headerTintColor: '#fff',
+                    headerStyle: { backgroundColor: '#015afc' },
+                    headerTitleStyle: { color: '#fff' },
+                }}
+            >
+                <Stack.Screen
+                    name="Quiénes Somos"
+                    component={QuienesSomos}
+                    options={{
+                        title: 'Quiénes Somos',
+                    }}
+                />
+            </Stack.Navigator >
+
+        );
+
+    };
+
     DrawerNavegador = () => {
 
         return (
@@ -114,10 +165,23 @@ class Campobase extends Component {
                     name="Campo base"
                     component={this.HomeNavegador}
                 />
+
+                <Drawer.Screen
+                    name="Quiénes Somos"
+                    component={this.QuienesSomosNavegador}
+                />
+                
                 <Drawer.Screen
                     name="Calendario"
                     component={this.CalendarioNavegador}
                 />
+
+                <Drawer.Screen
+                    name="Contacto"
+                    component={this.ContactoNavegador}
+                />
+
+                
             </Drawer.Navigator>
 
         );
