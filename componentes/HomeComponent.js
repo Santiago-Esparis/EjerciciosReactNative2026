@@ -4,6 +4,8 @@ import { Card, Text } from 'react-native-paper';
 import { EXCURSIONES } from '../comun/excursiones';
 import { CABECERAS } from '../comun/cabeceras';
 import { ACTIVIDADES } from '../comun/actividades';
+import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
+
 
 function RenderItem({ item }) {
   if (!item) {
@@ -14,7 +16,8 @@ function RenderItem({ item }) {
     <Card style={styles.card}>
 
       <ImageBackground
-        source={require('./imagenes/40Años.png')}
+
+        source={{ uri: baseUrl + item.imagen }}
         style={styles.image}
       >
 

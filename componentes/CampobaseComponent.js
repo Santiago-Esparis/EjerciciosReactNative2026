@@ -12,6 +12,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
+
 
 
 const Stack = createNativeStackNavigator();
@@ -28,7 +30,7 @@ function BotonMenu(props) {
             <MaterialCommunityIcons
                 name="menu"
                 size={40}
-                color={Platform.OS === 'ios' ? '#015afc' : 'white'}
+                color={Platform.OS === 'ios' ? colorGaztaroaOscuro : 'white'}
             />
         </Pressable>
     );
@@ -42,7 +44,7 @@ function CustomDrawerContent(props) {
                 <View style={styles.drawerHeader}>
                     <View style={styles.drawerHeaderImageContainer}>
                         <Image
-                            source={require('./imagenes/logo.png')}
+                            source={{ uri: baseUrl + '/imagenes/logo.png' }}
                             style={styles.drawerImage}
                         />
                     </View>
@@ -86,7 +88,7 @@ class Campobase extends Component {
                 initialRouteName="Home"
                 screenOptions={{
                     headerTintColor: '#fff',
-                    headerStyle: { backgroundColor: '#015afc' },
+                    headerStyle: { backgroundColor: colorGaztaroaOscuro },
                     headerTitleStyle: { color: '#fff' },
                     headerTitleAlign: 'center',
                 }}
@@ -112,7 +114,7 @@ class Campobase extends Component {
                 initialRouteName="Calendario"
                 screenOptions={{
                     headerTintColor: '#fff',
-                    headerStyle: { backgroundColor: '#015afc' },
+                    headerStyle: { backgroundColor: colorGaztaroaOscuro },
                     headerTitleStyle: { color: '#fff' },
                     headerTitleAlign: 'center'
                 }}
@@ -159,7 +161,7 @@ class Campobase extends Component {
                 initialRouteName="Contacto"
                 screenOptions={{
                     headerTintColor: '#fff',
-                    headerStyle: { backgroundColor: '#015afc' },
+                    headerStyle: { backgroundColor: colorGaztaroaOscuro },
                     headerTitleStyle: { color: '#fff' },
                     headerTitleAlign: 'center'
                 }}
@@ -185,7 +187,7 @@ class Campobase extends Component {
                 initialRouteName="Quiénes Somos"
                 screenOptions={{
                     headerTintColor: '#fff',
-                    headerStyle: { backgroundColor: '#015afc' },
+                    headerStyle: { backgroundColor: colorGaztaroaOscuro },
                     headerTitleStyle: { color: '#fff' },
                     headerTitleAlign: 'center'
                 }}
@@ -215,7 +217,7 @@ class Campobase extends Component {
                 screenOptions={{
                     headerShown: false,
                     drawerStyle: {
-                        backgroundColor: '#c2d3da',
+                        backgroundColor: colorGaztaroaClaro,
                     },
                 }}
             >
@@ -307,7 +309,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     drawerHeader: {
-        backgroundColor: '#015afc',
+        backgroundColor: colorGaztaroaOscuro,
         height: 100,
         flexDirection: 'row',
         alignItems: 'center',

@@ -3,6 +3,7 @@ import { View, StyleSheet, ImageBackground, ScrollView, FlatList } from 'react-n
 import { Card, Text, Divider, IconButton } from 'react-native-paper';
 import { EXCURSIONES } from '../comun/excursiones'
 import { COMENTARIOS } from '../comun/comentarios';
+import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
 
 
 function RenderComentario(props) {
@@ -70,7 +71,8 @@ function RenderExcursion(props) {
             <Card style={styles.card}>
 
                 <ImageBackground
-                    source={require('./imagenes/40Años.png')}
+                    
+                    source={{ uri: baseUrl + excursion.imagen }}
                     style={styles.image}
                 >
 
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     tituloImagen: {
-        color: 'chocolate',
+        color: 'white',
         fontSize: 30,
         fontWeight: 'bold',
         textAlign: 'center',
