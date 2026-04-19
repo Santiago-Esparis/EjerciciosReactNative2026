@@ -1,8 +1,27 @@
 import React, { Component } from 'react';
-import { FlatList, Text, StyleSheet, Image, View, ScrollView } from 'react-native';
 import { Card, List, Divider } from 'react-native-paper';
-import { ACTIVIDADES } from '../comun/actividades';
+import { FlatList, Text, StyleSheet, Image, View, ScrollView } from 'react-native';
+
 import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
+
+
+//import { ACTIVIDADES } from '../comun/actividades';
+import { connect } from 'react-redux';
+import { fetchExcursiones, fetchComentarios, fetchCabeceras, fetchActividades } from '../redux/ActionCreators';
+
+
+
+const mapStateToProps = (state) => {
+  return {
+    actividades: state.actividades
+  }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchActividades: () => dispatch(fetchActividades()),
+})
+
+
 
 function Historia() {
   return (
@@ -10,7 +29,7 @@ function Historia() {
       <Card.Title
         title="Un poquito de historia"
         titleStyle={{ textAlign: 'center', fontWeight: 'bold' }}
-        />
+      />
       <Card.Content>
         <Text style={styles.texto}>
           El nacimiento del club de montaña Gaztaroa se remonta a la
@@ -31,12 +50,21 @@ function Historia() {
 }
 
 class QuienesSomos extends Component {
+
+  /*
   constructor(props) {
     super(props);
     this.state = {
       actividades: ACTIVIDADES,
     };
+  } 
+  */
+
+  componentDidMount() {
+    this.props.fetchActividades();
   }
+
+
 
   render() {
     const renderActividadItem = ({ item }) => {
@@ -70,7 +98,9 @@ class QuienesSomos extends Component {
           />
           <FlatList
             scrollEnabled={false}
-            data={this.state.actividades}
+            data={this.props.actividades.actividades}
+            //data={this.state.actividades}
+            //{this.props.actividades.actividades.map((item) => (}
             renderItem={renderActividadItem}
             keyExtractor={(item) => item.id.toString()}
           />
@@ -86,4 +116,5 @@ const styles = StyleSheet.create({
   imagen: { width: 40, height: 40, alignSelf: 'center' },
 });
 
-export default QuienesSomos;
+//export default QuienesSomos;
+export default connect(mapStateToProps, mapDispatchToProps)(QuienesSomos);

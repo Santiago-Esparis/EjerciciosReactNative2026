@@ -1,24 +1,53 @@
-import { Component } from 'react';
-import Calendario from './CalendarioComponent';
-import DetalleExcursion from './DetalleExcursionComponent';
-import Home from './HomeComponent'
 import Constants from 'expo-constants';
-import Contacto from './ContactoComponent';
-import QuienesSomos from './QuienesSomosComponent';
-import { EXCURSIONES } from '../comun/excursiones';
-import { View, Platform, StyleSheet, Image, Text, Pressable } from 'react-native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+
+
+import { Component } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+import { View, Platform, StyleSheet, Image, Text, Pressable } from 'react-native';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+
+
+import Home from './HomeComponent'
+import Contacto from './ContactoComponent';
+import QuienesSomos from './QuienesSomosComponent';
+import Calendario from './CalendarioComponent';
+import DetalleExcursion from './DetalleExcursionComponent';
 import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
 
 
 
+
+//import { EXCURSIONES } from '../comun/excursiones';
+import { connect } from 'react-redux';
+import { fetchExcursiones, fetchComentarios, fetchCabeceras, fetchActividades } from '../redux/ActionCreators';
+
+
+
+
+
+
+const mapStateToProps = (state) => {
+    return {
+        excursiones: state.excursiones,
+        comentarios: state.comentarios,
+        cabeceras: state.cabeceras,
+        actividades: state.actividades,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    fetchExcursiones: () => dispatch(fetchExcursiones()),
+    fetchComentarios: () => dispatch(fetchComentarios()),
+    fetchCabeceras: () => dispatch(fetchCabeceras()),
+    fetchActividades: () => dispatch(fetchActividades()),
+})
+
+
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
-
 
 
 function BotonMenu(props) {
@@ -63,12 +92,26 @@ function CustomDrawerContent(props) {
 
 class Campobase extends Component {
 
+    /*
+    
     constructor(props) {
         super(props);
         this.state = {
             excursiones: EXCURSIONES,
         };
     }
+
+    */
+
+
+    componentDidMount() {
+        this.props.fetchExcursiones();
+        this.props.fetchComentarios();
+        this.props.fetchCabeceras();
+        this.props.fetchActividades();
+    }
+
+
 
     menuHeaderOptions = (title, navigation) => ({
         title,
@@ -128,7 +171,8 @@ class Campobase extends Component {
                     {(props) => (
                         <Calendario
                             {...props}
-                            excursiones={this.state.excursiones}
+                            //excursiones={this.state.excursiones}
+                            excursiones={this.props.excursiones.excursiones}
                         />
                     )}
                 </Stack.Screen>
@@ -145,7 +189,8 @@ class Campobase extends Component {
                     {(props) => (
                         <DetalleExcursion
                             {...props}
-                            excursiones={this.state.excursiones}
+                            //excursiones={this.state.excursiones}
+                            excursiones={this.props.excursiones.excursiones}
                         />
                     )}
                 </Stack.Screen>
@@ -336,4 +381,5 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Campobase;
+//export default Campobase;
+export default connect(mapStateToProps, mapDispatchToProps)(Campobase); 

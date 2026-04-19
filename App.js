@@ -6,17 +6,26 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import Campobase from './componentes/CampobaseComponent';
 
 
+import { Provider } from 'react-redux';
+import { ConfigureStore } from './redux/configureStore';
+
+const store = ConfigureStore();
+
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <PaperProvider>
-        <View style={{ flex: 1 }}>
-          <Campobase />
-          <StatusBar style="auto" />
-        </View>
-      </PaperProvider>
-    </SafeAreaProvider>
+
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <PaperProvider>
+          <View style={{ flex: 1 }}>
+            <Campobase />
+            <StatusBar style="auto" />
+          </View>
+        </PaperProvider>
+      </SafeAreaProvider>
+    </Provider>
+
   );
 }
 

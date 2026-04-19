@@ -1,10 +1,35 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { ScrollView, View, StyleSheet, ImageBackground } from 'react-native';
 import { Card, Text } from 'react-native-paper';
-import { EXCURSIONES } from '../comun/excursiones';
-import { CABECERAS } from '../comun/cabeceras';
-import { ACTIVIDADES } from '../comun/actividades';
+
 import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
+
+
+//import { EXCURSIONES } from '../comun/excursiones';
+//import { CABECERAS } from '../comun/cabeceras';
+//import { ACTIVIDADES } from '../comun/actividades';
+import { connect } from 'react-redux';
+import { fetchExcursiones, fetchComentarios, fetchCabeceras, fetchActividades } from '../redux/ActionCreators';
+
+
+
+
+
+
+const mapStateToProps = (state) => {
+  return {
+    excursiones: state.excursiones,
+    cabeceras: state.cabeceras,
+    actividades: state.actividades,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchExcursiones: () => dispatch(fetchExcursiones()),
+  fetchCabeceras: () => dispatch(fetchCabeceras()),
+  fetchActividades: () => dispatch(fetchActividades()),
+})
+
 
 
 function RenderItem({ item }) {
@@ -38,21 +63,38 @@ function RenderItem({ item }) {
 }
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      excursiones: EXCURSIONES,
-      cabeceras: CABECERAS,
-      actividades: ACTIVIDADES,
-    };
-  }
 
+  /**
+
+    constructor(props) {
+      super(props);
+      this.state = {
+        excursiones: EXCURSIONES,
+        cabeceras: CABECERAS,
+        actividades: ACTIVIDADES,
+      };
+    }
+   */
+
+  componentDidMount() {
+    this.props.fetchExcursiones();
+    this.props.fetchCabeceras();
+    this.props.fetchActividades();
+  }
+ 
   render() {
+    /*
+    <RenderItem item={this.state.cabeceras.filter((item) => item.destacado)[0]} />
+    <RenderItem item={this.state.excursiones.filter((item) => item.destacado)[0]} />
+    <RenderItem item={this.state.actividades.filter((item) => item.destacado)[0]} />
+    */
+
     return (
       <ScrollView>
-        <RenderItem item={this.state.cabeceras.filter((item) => item.destacado)[0]} />
-        <RenderItem item={this.state.excursiones.filter((item) => item.destacado)[0]} />
-        <RenderItem item={this.state.actividades.filter((item) => item.destacado)[0]} />
+        <RenderItem item={this.props.cabeceras.cabeceras.filter((item) => item.destacado)[0]} />
+        <RenderItem item={this.props.excursiones.excursiones.filter((item) => item.destacado)[0]} />
+        <RenderItem item={this.props.actividades.actividades.filter((item) => item.destacado)[0]} />
+
       </ScrollView>
     );
   }
@@ -85,4 +127,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+//export default Home;
+export default connect(mapStateToProps, mapDispatchToProps)(Home); 
