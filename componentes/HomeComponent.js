@@ -3,6 +3,7 @@ import { ScrollView, View, StyleSheet, ImageBackground } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 
 import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
+import { IndicadorActividad } from './IndicadorActividadComponent';
 
 
 //import { EXCURSIONES } from '../comun/excursiones';
@@ -31,7 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-
+/*
 function RenderItem({ item }) {
   if (!item) {
     return <View />;
@@ -62,10 +63,61 @@ function RenderItem({ item }) {
   );
 }
 
+*/
+
+
+function RenderItem(props) {
+  const item = props.item;
+  if (props.isLoading) {
+    return (
+      <IndicadorActividad />
+    );
+  }
+  else if (props.errMess) {
+    return (
+      <View>
+        <Text>{props.errMess}</Text>
+      </View>
+    );
+  }
+  else {
+    const item = props.item;
+    if (item != null) {
+      return (
+        <Card style={styles.card}>
+
+          <ImageBackground
+
+            source={{ uri: baseUrl + item.imagen }}
+            style={styles.image}
+          >
+
+            <Text style={styles.tituloImagen}>
+              {item.nombre}
+            </Text>
+
+          </ImageBackground>
+
+          <Card.Content>
+            <Text style={styles.descripcion}>
+              {item.descripcion}
+            </Text>
+          </Card.Content>
+        </Card>
+      );
+    }
+    else {
+      return (<View></View>);
+    }
+  }
+}
+
+
+
 class Home extends Component {
 
   /**
-
+ 
     constructor(props) {
       super(props);
       this.state = {
@@ -81,19 +133,37 @@ class Home extends Component {
     this.props.fetchCabeceras();
     this.props.fetchActividades();
   }
- 
+
   render() {
     /*
     <RenderItem item={this.state.cabeceras.filter((item) => item.destacado)[0]} />
     <RenderItem item={this.state.excursiones.filter((item) => item.destacado)[0]} />
     <RenderItem item={this.state.actividades.filter((item) => item.destacado)[0]} />
+    --
+    <RenderItem item={this.props.cabeceras.cabeceras.filter((item) => item.destacado)[0]} />
+    <RenderItem item={this.props.excursiones.excursiones.filter((item) => item.destacado)[0]} />
+    <RenderItem item={this.props.actividades.actividades.filter((item) => item.destacado)[0]} />
     */
 
     return (
       <ScrollView>
-        <RenderItem item={this.props.cabeceras.cabeceras.filter((item) => item.destacado)[0]} />
-        <RenderItem item={this.props.excursiones.excursiones.filter((item) => item.destacado)[0]} />
-        <RenderItem item={this.props.actividades.actividades.filter((item) => item.destacado)[0]} />
+
+        <RenderItem item={this.props.cabeceras.cabeceras.filter((item) => item.destacado)[0]}
+          isLoading={this.props.cabeceras.isLoading}
+          errMess={this.props.cabeceras.errMess}
+        />
+
+        <RenderItem item={this.props.excursiones.excursiones.filter((item) => item.destacado)[0]}
+          isLoading={this.props.excursiones.isLoading}
+          errMess={this.props.excursiones.errMess}
+        />
+
+        <RenderItem item={this.props.actividades.actividades.filter((item) => item.destacado)[0]}
+          isLoading={this.props.actividades.isLoading}
+          errMess={this.props.actividades.errMess}
+        />
+
+
 
       </ScrollView>
     );

@@ -3,7 +3,7 @@ import { Card, List, Divider } from 'react-native-paper';
 import { FlatList, Text, StyleSheet, Image, View, ScrollView } from 'react-native';
 
 import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
-
+import { IndicadorActividad } from './IndicadorActividadComponent';
 
 //import { ACTIVIDADES } from '../comun/actividades';
 import { connect } from 'react-redux';
@@ -96,19 +96,31 @@ class QuienesSomos extends Component {
             title="Actividades y recursos"
             titleStyle={{ textAlign: 'center', fontWeight: 'bold' }}
           />
-          <FlatList
-            scrollEnabled={false}
-            data={this.props.actividades.actividades}
-            //data={this.state.actividades}
-            //{this.props.actividades.actividades.map((item) => (}
-            renderItem={renderActividadItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
+
+          {this.props.actividades.isLoading ? (
+            <IndicadorActividad />
+          ) : this.props.actividades.errMess ? (
+            <Text>{this.props.actividades.errMess}</Text>
+          ) : (
+            <FlatList
+              scrollEnabled={false}
+              data={this.props.actividades.actividades}
+              renderItem={renderActividadItem}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          )}
         </Card>
       </ScrollView>
     );
   }
 }
+/*<FlatList
+  scrollEnabled={false}
+  data={this.props.actividades.actividades}
+  renderItem={renderActividadItem}
+  keyExtractor={(item) => item.id.toString()}
+/>
+*/
 
 const styles = StyleSheet.create({
   card: { margin: 10 },

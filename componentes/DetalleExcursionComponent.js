@@ -8,9 +8,9 @@ import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun
 //import { EXCURSIONES } from '../comun/excursiones'
 //import { COMENTARIOS } from '../comun/comentarios';
 import { connect } from 'react-redux';
-import { fetchExcursiones, fetchComentarios, fetchCabeceras, fetchActividades } from '../redux/ActionCreators';
+import { fetchExcursiones, fetchComentarios, fetchCabeceras, fetchActividades, postFavorito } from '../redux/ActionCreators';
 
-
+import { IndicadorActividad } from './IndicadorActividadComponent';
 
 
 
@@ -19,12 +19,14 @@ const mapStateToProps = (state) => {
     return {
         excursiones: state.excursiones,
         comentarios: state.comentarios,
+        favoritos: state.favoritos,
     };
 };
 
 const mapDispatchToProps = (dispatch) => ({
     fetchExcursiones: () => dispatch(fetchExcursiones()),
     fetchComentarios: () => dispatch(fetchComentarios()),
+    postFavorito: (excursionId) => dispatch(postFavorito(excursionId)),
 })
 
 
@@ -137,7 +139,8 @@ function RenderExcursion(props) {
 
 class DetalleExcursion extends Component {
 
-    constructor(props) {
+    /**
+     * constructor(props) {
         super(props);
         this.state = {
             //excursiones: EXCURSIONES,
@@ -145,6 +148,7 @@ class DetalleExcursion extends Component {
             favoritos: [],
         };
     }
+     */
 
     componentDidMount() {
         this.props.fetchExcursiones();
@@ -153,9 +157,12 @@ class DetalleExcursion extends Component {
 
 
     marcarFavorito(excursionId) {
+        /*
         this.setState({
             favoritos: this.state.favoritos.concat(excursionId)
         });
+        */
+        this.props.postFavorito(excursionId);
     }
 
 
@@ -165,18 +172,33 @@ class DetalleExcursion extends Component {
         const excursiones = this.props.excursiones.excursiones || [];
         const comentarios = this.props.comentarios.comentarios || [];
 
-        const excursion = excursiones.find(e => e.id === excursionId);
+        const excursion = excursiones.find(e => e.id === +excursionId);
 
+
+        if (this.props.excursiones.isLoading || this.props.comentarios.isLoading) {
+            return <IndicadorActividad />;
+        }
+
+        if (this.props.excursiones.errMess) {
+            return <Text>{this.props.excursiones.errMess}</Text>;
+        }
+
+        if (this.props.comentarios.errMess) {
+            return <Text>{this.props.comentarios.errMess}</Text>;
+        }
         return (
             <ScrollView>
+
                 <RenderExcursion
                     excursion={excursion}
-                    favorita={this.state.favoritos.some(el => el === excursionId)}
+                    favorita={
+                        (this.props.favoritos?.favoritos ?? []).some(el => el === +excursionId)
+                    }
                     onPress={() => this.marcarFavorito(excursionId)}
                 />
 
                 <RenderComentario
-                    comentarios={comentarios.filter(c => c.excursionId === excursionId)}
+                    comentarios={comentarios.filter(c => c.excursionId === +excursionId)}
                 />
             </ScrollView>
         );

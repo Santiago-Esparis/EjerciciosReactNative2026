@@ -171,8 +171,7 @@ class Campobase extends Component {
                     {(props) => (
                         <Calendario
                             {...props}
-                            //excursiones={this.state.excursiones}
-                            excursiones={this.props.excursiones.excursiones}
+                            excursiones={this.props.excursiones.excursiones || []}
                         />
                     )}
                 </Stack.Screen>
@@ -182,15 +181,12 @@ class Campobase extends Component {
                     options={{
                         title: 'Detalle Excursión',
                         headerBackTitle: 'Calendario',
-
-
                     }}
                 >
                     {(props) => (
                         <DetalleExcursion
                             {...props}
-                            //excursiones={this.state.excursiones}
-                            excursiones={this.props.excursiones.excursiones}
+                            excursiones={this.props.excursiones.excursiones || []}
                         />
                     )}
                 </Stack.Screen>
