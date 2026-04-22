@@ -1,14 +1,14 @@
 import { Component } from 'react';
-import { View, StyleSheet, ImageBackground, ScrollView, FlatList } from 'react-native';
-import { Card, Text, Divider, IconButton } from 'react-native-paper';
+import { View, StyleSheet, ImageBackground, ScrollView, FlatList, Modal } from 'react-native';
+import { Card, Text, Divider, IconButton, TextInput, Button } from 'react-native-paper';
 
 import { colorGaztaroaClaro, colorGaztaroaOscuro, baseUrl } from '../comun/comun';
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 //import { EXCURSIONES } from '../comun/excursiones'
 //import { COMENTARIOS } from '../comun/comentarios';
 import { connect } from 'react-redux';
-import { fetchExcursiones, fetchComentarios, fetchCabeceras, fetchActividades, postFavorito } from '../redux/ActionCreators';
+import { fetchExcursiones, fetchComentarios, fetchCabeceras, fetchActividades, postFavorito, postComentario } from '../redux/ActionCreators';
 
 import { IndicadorActividad } from './IndicadorActividadComponent';
 
@@ -27,6 +27,8 @@ const mapDispatchToProps = (dispatch) => ({
     fetchExcursiones: () => dispatch(fetchExcursiones()),
     fetchComentarios: () => dispatch(fetchComentarios()),
     postFavorito: (excursionId) => dispatch(postFavorito(excursionId)),
+    postComentario: (excursionId, valoracion, autor, comentario) =>
+        dispatch(postComentario(excursionId, valoracion, autor, comentario)),
 })
 
 
@@ -125,6 +127,14 @@ function RenderExcursion(props) {
                                 : props.onPress()
                         }
                     />
+
+                    <IconButton
+                        icon="pencil"
+                        size={28}
+                        onPress={
+                            props.onPressComentario
+                        }
+                    />
                 </View>
 
             </Card>
@@ -139,16 +149,16 @@ function RenderExcursion(props) {
 
 class DetalleExcursion extends Component {
 
-    /**
-     * constructor(props) {
+    constructor(props) {
         super(props);
+
         this.state = {
-            //excursiones: EXCURSIONES,
-            //comentarios: COMENTARIOS,
-            favoritos: [],
-        };
+            valoracion: 5,
+            autor: '',
+            comentario: '',
+            showModal: false
+        }
     }
-     */
 
     componentDidMount() {
         this.props.fetchExcursiones();
@@ -157,14 +167,64 @@ class DetalleExcursion extends Component {
 
 
     marcarFavorito(excursionId) {
-        /*
-        this.setState({
-            favoritos: this.state.favoritos.concat(excursionId)
-        });
-        */
         this.props.postFavorito(excursionId);
     }
 
+    toggleModal() {
+        const nuevoEstado = !this.state.showModal;
+
+        this.setState({ showModal: nuevoEstado });
+
+        if (this.state.showModal) {
+            this.resetForm();
+        }
+    }
+
+    handleSubmit() {
+        const { excursionId } = this.props.route.params;
+
+        this.props.postComentario(
+            +excursionId,
+            this.state.valoracion,
+            this.state.autor,
+            this.state.comentario
+        );
+
+        this.toggleModal();
+        this.resetForm();
+    }
+
+    resetForm() {
+        this.setState({
+            valoracion: 3,
+            autor: '',
+            comentario: '',
+            showModal: false
+        });
+    }
+
+    renderEstrellas() {
+        return [1, 2, 3, 4, 5].map((num) => (
+            <MaterialCommunityIcons
+                key={num}
+                name={this.state.valoracion >= num ? 'star' : 'star-outline'}
+                size={40}
+                color="#f4b400"
+                onPress={() => this.setState({ valoracion: num })}
+            />
+        ));
+    }
+
+    getTextoValoracion() {
+        switch (this.state.valoracion) {
+            case 1: return 'Muy malo';
+            case 2: return 'Malo';
+            case 3: return 'Normal';
+            case 4: return 'Bueno';
+            case 5: return 'Excelente';
+            default: return '';
+        }
+    }
 
     render() {
         const { excursionId } = this.props.route.params;
@@ -195,11 +255,78 @@ class DetalleExcursion extends Component {
                         (this.props.favoritos?.favoritos ?? []).some(el => el === +excursionId)
                     }
                     onPress={() => this.marcarFavorito(excursionId)}
+                    onPressComentario={() => this.toggleModal()}
                 />
 
                 <RenderComentario
                     comentarios={comentarios.filter(c => c.excursionId === +excursionId)}
                 />
+
+                <Modal
+                    visible={this.state.showModal}
+                    animationType="slide"
+                    transparent={false}
+                >
+                    <View style={styles.modalContainer}>
+
+                        <Text style={styles.modalTitulo}>Añadir comentario</Text>
+
+                        <View style={styles.estrellasContainer}>
+                            {this.renderEstrellas()}
+                        </View>
+
+                        <Text style={styles.textoValoracion}>
+                            {this.getTextoValoracion()}
+                        </Text>
+
+                        <TextInput
+                            label="Autor"
+                            mode="outlined"
+                            outlineColor={colorGaztaroaOscuro}
+                            activeOutlineColor={colorGaztaroaOscuro}
+                            left={<TextInput.Icon icon="account" />}
+                            value={this.state.autor}
+                            onChangeText={(text) => this.setState({ autor: text })}
+                            style={{ marginBottom: 15 }}
+                        />
+
+                        <TextInput
+                            label="Comentario"
+                            mode="outlined"
+                            outlineColor={colorGaztaroaOscuro}
+                            activeOutlineColor={colorGaztaroaOscuro}
+                            left={<TextInput.Icon icon="comment" />}
+                            multiline
+                            value={this.state.comentario}
+                            onChangeText={(text) => this.setState({ comentario: text })}
+                            style={{ marginBottom: 20 }}
+                        />
+
+                        <View style={styles.botonesContainer}>
+
+                            <Button
+                                mode="outlined"
+                                textColor={colorGaztaroaOscuro}
+                                onPress={() => {
+                                    this.resetForm();
+                                    this.toggleModal();
+                                }}
+                            >
+                                X  Cancelar
+                            </Button>
+
+                            <Button
+                                mode="contained"
+                                buttonColor={colorGaztaroaOscuro}
+                                onPress={() => this.handleSubmit()}
+                            >
+                                → Enviar
+                            </Button>
+
+                        </View>
+
+                    </View>
+                </Modal>
             </ScrollView>
         );
     }
@@ -246,8 +373,38 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     iconoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 8,
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'white',
+        padding: 20,
+        justifyContent: 'flex-start'
+    },
+    modalTitulo: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20
+    },
+    estrellasContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 10
+    },
+    textoValoracion: {
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 20
+    },
+    botonesContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10
     },
 });
 
